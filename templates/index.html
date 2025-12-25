@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+<div class="box">
+
+<h2>Solanki Labs
+    📄 PDF Compressor</h2>
+
+<div id="drop-area">
+  Drag & Drop PDF here
+  <input type="file" id="fileInput" hidden>
+</div>
+
+<p id="fileInfo"></p>
+
+<label>DPI: <span id="dpiVal">150</span></label>
+<input type="range" id="dpi" min="72" max="300" value="150">
+
+<div class="btns">
+  <button disabled onclick="upload('low')">Low Compress</button>
+  <button disabled onclick="upload('medium')">Medium Compress</button>
+  <button disabled onclick="upload('high')">High Compress</button>
+</div>
+
+<div id="progress">
+  <div id="bar"></div>
+</div>
+
+<p id="result"></p>
+
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

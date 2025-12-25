@@ -1,0 +1,37 @@
+body {
+  background:#f4f6f8;
+  font-family:Arial;
+}
+
+.box {
+  max-width:360px;
+  margin:40px auto;
+  padding:20px;
+  background:white;
+  border-radius:8px;
+  text-align:center;
+}
+
+#drop-area {
+  border:2px dashed #007bff;
+  padding:30px;
+  cursor:pointer;
+}
+
+.btns button {
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+}
+
+#progress {
+  width:100%;
+  background:#ddd;
+  margin-top:10px;
+}
+
+#bar {
+  height:10px;
+  width:0;
+  background:#2887a7;
+}
