@@ -32,7 +32,7 @@ function upload(level){
 
   let data = new FormData();
   data.append("file", file);
-  data.append("level", level);
+  data.append("mode", level);
   data.append("dpi", document.getElementById("dpi").value);
 
   let xhr = new XMLHttpRequest();
