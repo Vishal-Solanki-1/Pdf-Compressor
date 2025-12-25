@@ -27,13 +27,18 @@ def home(request: Request):
 @app.post("/compress")
 async def compress_pdf(
     file: UploadFile = File(...),
-    mode: str = Form(...)
+    mode: str = Form(...),
+    dpi: int = Form(150)
 ):
     input_file = f"{UPLOAD}/{uuid.uuid4()}.pdf"
     output_file = f"{OUTPUT}/{uuid.uuid4()}_compressed.pdf"
 
+    # Save uploaded file
     with open(input_file, "wb") as f:
         f.write(await file.read())
+
+    # ✅ SIZE BEFORE
+    original_size = os.path.getsize(input_file)
 
     gs_cmd = [
         "gswin64c" if os.name == "nt" else "gs",
@@ -49,8 +54,16 @@ async def compress_pdf(
 
     subprocess.run(gs_cmd)
 
+    # ✅ SIZE AFTER
+    compressed_size = os.path.getsize(output_file)
+
     return FileResponse(
         output_file,
         media_type="application/pdf",
-        filename="compressed.pdf"
+        filename="compressed.pdf",
+        headers={
+            "Content-Disposition": "attachment; filename=compressed.pdf",
+            "X-Original-Size": str(original_size),
+            "X-Compressed-Size": str(compressed_size),
+        }
     )
