@@ -2,7 +2,7 @@ import os, uuid, subprocess
 from fastapi import FastAPI, UploadFile, File, Form, Request
 from fastapi.responses import FileResponse, JSONResponse   # ✅ JSONResponse add kiya
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+
 
 
 app = FastAPI()
@@ -19,11 +19,10 @@ compression_map = {
 }
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
-def home(request: Request):
-    return templates.TemplateResponse("index.html", {})
+def home():
+    return FileResponse("templates/index.html")
 
 @app.post("/compress")
 async def compress_pdf(
