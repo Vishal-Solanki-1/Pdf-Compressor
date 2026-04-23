@@ -1,8 +1,9 @@
 import os, uuid, subprocess
 from fastapi import FastAPI, UploadFile, File, Form, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse   # ✅ JSONResponse add kiya
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
 
 app = FastAPI()
 
@@ -57,13 +58,24 @@ async def compress_pdf(
     # ✅ SIZE AFTER
     compressed_size = os.path.getsize(output_file)
 
+    # ✅ NEW: calculate reduction %
+    reduction = ((original_size - compressed_size) / original_size) * 100
+
+    # ✅ NEW: return JSON instead of direct file
+    return JSONResponse({
+        "download_url": f"/download/{os.path.basename(output_file)}",
+        "original_size": round(original_size / 1024, 2),   # KB
+        "compressed_size": round(compressed_size / 1024, 2),
+        "reduction": round(reduction, 2)
+    })
+
+
+# ✅ NEW ROUTE (added only this)
+@app.get("/download/{filename}")
+def download_file(filename: str):
+    file_path = os.path.join(OUTPUT, filename)
     return FileResponse(
-        output_file,
+        file_path,
         media_type="application/pdf",
-        filename="compressed.pdf",
-        headers={
-            "Content-Disposition": "attachment; filename=compressed.pdf",
-            "X-Original-Size": str(original_size),
-            "X-Compressed-Size": str(compressed_size),
-        }
+        filename="compressed.pdf"
     )
