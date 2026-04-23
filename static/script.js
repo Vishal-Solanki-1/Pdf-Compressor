@@ -26,36 +26,49 @@ function enable(){
   buttons.forEach(b=>b.disabled=false);
 }
 
-function upload(level){
-  let bar = document.getElementById("bar");
-  bar.style.width="0";
+function upload(level) {
+  if (!file) return;
 
-  let data = new FormData();
-  data.append("file", file);
-  data.append("mode", level);
-  data.append("dpi", document.getElementById("dpi").value);
+  startProgress();
 
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST","/compress");
+  let formData = new FormData();
+  formData.append("file", file);
+  formData.append("mode", level);   // ⚠️ IMPORTANT (mode, not level)
+  formData.append("dpi", document.getElementById("dpi").value);
 
-  xhr.upload.onprogress = e => {
-    bar.style.width = (e.loaded/e.total*100)+"%";
-  };
+  fetch("/compress", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("progress").style.width = "100%";
 
-  xhr.onload = ()=>{
-    let blob = xhr.response;
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download="compressed.pdf";
-    a.click();
+    // show result box
+    document.getElementById("resultBox").style.display = "block";
 
-    let orig = xhr.getResponseHeader("X-Original-Size");
-    let comp = xhr.getResponseHeader("X-Compressed-Size");
+    // show sizes
+    document.getElementById("sizes").innerText =
+      `Original: ${data.original_size} KB 
+Compressed: ${data.compressed_size} KB 
+Reduced: ${data.reduction}%`;
 
-    document.getElementById("result").innerText =
-      `Before: ${(orig/1024/1024).toFixed(2)} MB | After: ${(comp/1024/1024).toFixed(2)} MB`;
-  };
+    // download button
+    document.getElementById("downloadBtn").onclick = () => {
+      window.location.href = data.download_url;
+    };
+  });
+}
 
-  xhr.responseType="blob";
-  xhr.send(data);
+function startProgress() {
+  let bar = document.getElementById("progress");
+  bar.style.width = "0%";
+
+  let width = 0;
+  let interval = setInterval(() => {
+    width += 10;
+    bar.style.width = width + "%";
+
+    if (width >= 90) clearInterval(interval);
+  }, 200);
 }
