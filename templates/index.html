@@ -1,38 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF Compressor</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
-<div class="box">
 
-<h2>Solanki Labs
-    📄 PDF Compressor</h2>
+<div class="container">
+  <div class="upload-card">
 
-<div id="drop-area">
-  Drag & Drop PDF here
-  <input type="file" id="fileInput" hidden>
-</div>
+    <div class="header">
+      <h2>Upload PDF</h2>
+    </div>
 
-<p id="fileInfo"></p>
+    <!-- Upload Area -->  
+    <div id="drop-area">
+      <p>Click to Upload or Drag & Drop</p>
+      <span>(Only PDF allowed)</span>
+      <input type="file" id="fileInput" accept="application/pdf" hidden>
+    </div>
 
-<label>DPI: <span id="dpiVal">150</span></label>
-<input type="range" id="dpi" min="72" max="300" value="150">
+    <!-- File Info -->
+    <div id="fileInfo"></div>
 
-<div class="btns">
-  <button disabled onclick="upload('low')">Low Compress</button>
-  <button disabled onclick="upload('medium')">Medium Compress</button>
-  <button disabled onclick="upload('high')">High Compress</button>
-</div>
+    <!-- Compression Slider -->
+    <label>DPI: <span id="dpiVal">150</span></label>
+    <input type="range" id="dpi" min="72" max="300" value="150">
 
-<div id="progress">
-  <div id="bar"></div>
-</div>
+    <!-- Buttons -->
+    <div class="actions">
+      <button onclick="upload('low')">Low</button>
+      <button onclick="upload('medium')">Medium</button>
+      <button onclick="upload('high')">High</button>
+    </div>
 
-<p id="result"></p>
+    <!-- Progress -->
+    <div class="progress-bar">
+      <div id="progress"></div>
+    </div>
 
+    <!-- Result -->
+   <div id="resultBox" style="display:none;">
+     <p id="sizes"></p>
+     <button id="downloadBtn">Download PDF</button>
+   </div>
+
+  </div>
 </div>
 
 <script src="/static/script.js"></script>
