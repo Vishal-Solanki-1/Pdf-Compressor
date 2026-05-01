@@ -1,6 +1,6 @@
 import os, uuid, subprocess
 from fastapi import FastAPI, UploadFile, File, Form, Request
-from fastapi.responses import FileResponse, JSONResponse   # ✅ JSONResponse add kiya
+from fastapi.responses import FileResponse, JSONResponse   
 from fastapi.staticfiles import StaticFiles
 
 
@@ -37,7 +37,7 @@ async def compress_pdf(
     with open(input_file, "wb") as f:
         f.write(await file.read())
 
-    # ✅ SIZE BEFORE
+    # SIZE BEFORE
     original_size = os.path.getsize(input_file)
 
     gs_cmd = [
@@ -54,13 +54,13 @@ async def compress_pdf(
 
     subprocess.run(gs_cmd)
 
-    # ✅ SIZE AFTER
+    # SIZE AFTER
     compressed_size = os.path.getsize(output_file)
 
-    # ✅ NEW: calculate reduction %
+    # NEW: calculate reduction %
     reduction = ((original_size - compressed_size) / original_size) * 100
 
-    # ✅ NEW: return JSON instead of direct file
+    #  NEW: return JSON instead of direct file
     return JSONResponse({
         "download_url": f"/download/{os.path.basename(output_file)}",
         "original_size": round(original_size / 1024, 2),   # KB
@@ -69,7 +69,7 @@ async def compress_pdf(
     })
 
 
-# ✅ NEW ROUTE (added only this)
+#  NEW ROUTE (added only this)
 @app.get("/download/{filename}")
 def download_file(filename: str):
     file_path = os.path.join(OUTPUT, filename)
